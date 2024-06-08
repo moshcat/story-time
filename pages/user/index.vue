@@ -34,7 +34,7 @@ definePageMeta({ middleware: "auth" });
                       <span>Edit Profile</span>
                     </button>
                   </div>
-                  <div class="profile__body row">
+                  <div class="profile__body row" v-if="userStore.user">
                     <div class="col-lg-4">
                       <div
                         class="profile__image__wrapper d-flex flex-column justify-content-center align-items-center gap-3 me-5"
@@ -60,19 +60,22 @@ definePageMeta({ middleware: "auth" });
                           <th class="fw-medium" scope="row" style="width: 20%">
                             Name
                           </th>
-                          <td>Abi</td>
+                          <td>{{ userStore.user.data.username }}</td>
                         </tr>
                         <tr>
                           <th scope="row" class="scroll-to-password fw-medium">
                             Email
                           </th>
-                          <td>email@gmail.com</td>
+                          <td>{{ userStore.user.data.email }}</td>
                         </tr>
                         <tr>
                           <th scope="row" class="scroll-to-password fw-medium">
                             Biodata
                           </th>
-                          <td>-</td>
+                          <td v-if="userStore.user.data.biodata">
+                            {{ userStore.user.data?.biodata }}
+                          </td>
+                          <td v-else>-</td>
                         </tr>
                       </table>
                     </div>
