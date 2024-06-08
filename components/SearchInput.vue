@@ -7,7 +7,7 @@
         placeholder="Search story..."
         aria-label="Search story..."
         aria-describedby="basic-addon2"
-        v-model="searchText"
+        v-model="searchQuery"
         @keyup.enter="updateSearch"
       />
       <button
@@ -24,24 +24,21 @@
 
 <script setup>
 import { ref, watch } from "vue";
+import { useStoryStore } from "~/stores/story.ts";
 
-const props = defineProps({
-  modelValue: { type: String, required: true },
-});
+const storyStore = useStoryStore();
 
-const emit = defineEmits(["update:modelValue"]);
-
-const searchText = ref(props.modelValue);
+const searchQuery = ref(storyStore.searchQuery);
 
 const updateSearch = () => {
-  emit("update:modelValue", searchText.value);
+  storyStore.searchQuery = searchQuery.value;
 };
 
-// Synchronize prop change with local state
+// Synchronize store's searchQuery with local state
 watch(
-  () => props.modelValue,
+  () => storyStore.searchQuery,
   (newValue) => {
-    searchText.value = newValue;
+    searchQuery.value = newValue;
   },
 );
 </script>

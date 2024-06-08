@@ -1,84 +1,27 @@
 <script setup>
-import { ref, computed, watch } from "vue";
+import { useStoryStore } from "~/stores/story.ts";
 
-const props = defineProps({
-  searchQuery: { type: String, default: "" },
-  sortOrder: { type: String, default: "Newest" },
-});
-
-const stories = ref([]);
-const defaultPage = ref(1);
 const urlBase = "https://storytime-api.strapi.timedoor-js.web.id/";
 
-const fetchStories = async (query, page) => {
-  const { data, pending, error, refresh } = await useFetch(
-    `${urlBase}api/stories?keyword=${query}&page=${page}`,
-  );
+const storyStore = useStoryStore();
 
-  if (data.value) {
-    if (page === 1) {
-      stories.value = data.value.data;
-    } else {
-      stories.value = [...stories.value, ...data.value.data];
-    }
-  }
-};
-fetchStories(props.searchQuery, defaultPage.value);
+storyStore.fetchStories(storyStore.searchQuery, storyStore.defaultPage);
 
-// untuk perubahan input search
 watch(
-  () => props.searchQuery,
+  () => storyStore.searchQuery,
   (newQuery) => {
-    defaultPage.value = 1;
-    fetchStories(newQuery, defaultPage.value);
+    storyStore.defaultPage = 1;
+    storyStore.fetchStories(newQuery, storyStore.defaultPage);
   },
 );
 
 watch(
-  () => props.sortOrder,
+  () => storyStore.sortOrder,
   () => {
-    defaultPage.value = 1;
-    fetchStories(props.searchQuery, defaultPage.value);
+    storyStore.defaultPage = 1;
+    storyStore.fetchStories(storyStore.searchQuery, storyStore.defaultPage);
   },
 );
-
-function formatDate(dateStr) {
-  const date = new Date(dateStr);
-  const options = { day: "numeric", month: "short", year: "numeric" };
-  return new Intl.DateTimeFormat("id-ID", options).format(date);
-}
-
-const sortedStories = computed(() => {
-  let sorted = [...stories.value];
-  switch (props.sortOrder) {
-    case "Newest":
-      sorted.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      break;
-    case "A-Z":
-      sorted.sort((a, b) => a.title.localeCompare(b.title));
-      break;
-    case "Z-A":
-      sorted.sort((a, b) => b.title.localeCompare(a.title));
-      break;
-  }
-  return sorted;
-});
-
-const filteredStories = computed(() => {
-  if (!props.searchQuery) return sortedStories.value;
-  return sortedStories.value.filter(
-    (story) =>
-      story.title.toLowerCase().includes(props.searchQuery.toLowerCase()) ||
-      story.content.toLowerCase().includes(props.searchQuery.toLowerCase()) ||
-      story.category.name
-        .toLowerCase()
-        .includes(props.searchQuery.toLowerCase()),
-  );
-});
-const loadMore = () => {
-  defaultPage.value++;
-  fetchStories(props.searchQuery, defaultPage.value);
-};
 </script>
 
 <template>
@@ -87,7 +30,7 @@ const loadMore = () => {
       <div class="row">
         <div
           class="col-3 mt-3"
-          v-for="(item, index) in filteredStories"
+          v-for="(item, index) in storyStore.filteredStories"
           :key="index"
         >
           <NuxtLink :to="'/story/' + item.id">
@@ -98,6 +41,7 @@ const loadMore = () => {
             >
               <NuxtLink :to="'/story/' + item.id">
                 <img
+                  v-if="item.cover_image"
                   :src="urlBase + item.cover_image.url"
                   class="card-img-top object-fit-cover"
                   alt="..."
@@ -109,7 +53,7 @@ const loadMore = () => {
                 <div class="card-title p-1 pb-0">
                   <span class="d-flex gap-2">
                     <span class="badge text-bg-dark">{{
-                      item.category.name
+                      item.category?.name
                     }}</span>
                   </span>
                   <h5 class="mt-2 line-clamp">{{ item.title }}</h5>
@@ -122,11 +66,11 @@ const loadMore = () => {
                   class="d-flex justify-content-between p-1 mt-auto"
                   style="font-size: 14px"
                 >
-                  <span v-if="item.author" class="fw-medium"
-                    >By {{ item.author.username }}</span
-                  >
+                  <span v-if="item.author" class="fw-medium">
+                    By {{ item.author?.username }}
+                  </span>
                   <span class="fw-medium">{{
-                    formatDate(item.createdAt)
+                    storyStore.formatDate(item.createdAt)
                   }}</span>
                 </div>
               </div>
@@ -136,7 +80,9 @@ const loadMore = () => {
       </div>
       <div class="row d-flex justify-content-center my-5">
         <div class="col-2">
-          <BaseButton isOutline="true" @click="loadMore">Show more</BaseButton>
+          <BaseButton variant="outline-dark w-100" @click="storyStore.loadMore">
+            Show more
+          </BaseButton>
         </div>
       </div>
     </section>

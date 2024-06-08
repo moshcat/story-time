@@ -1,3 +1,15 @@
+<script setup>
+import { useAuthStore } from "~/stores/auth.ts";
+
+const authStore = useAuthStore();
+const router = useRouter();
+
+const handleLogout = () => {
+  authStore.logout();
+  router.push("/login");
+};
+</script>
+
 <template>
   <div>
     <aside class="sidebar card d-flex gap-3 rounded-1 p-3">
@@ -18,14 +30,11 @@
         class="d-flex gap-2 text-decoration-none text-dark align-items-center"
         ><i class="fa-solid fa-bookmark fs-5"></i>Bookmark
       </nuxt-link>
-      <button class="btn btn-outline-danger">
-        Logout
-        <i class="fa-solid fa-arrow-right-from-bracket ms-2"></i>
-      </button>
+      <BaseButton variant="outline-danger w-100" @click="handleLogout"
+        >Logout<i class="fa-solid fa-arrow-right-from-bracket ms-2"></i
+      ></BaseButton>
     </aside>
   </div>
 </template>
-
-<script setup></script>
 
 <style lang="scss" scoped></style>

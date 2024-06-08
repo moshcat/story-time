@@ -3,9 +3,10 @@
     <select
       class="form-select"
       aria-label="Default select example"
+      v-model="selectedSort"
       @change="handleSortChange"
     >
-      <option selected disabled>Sort</option>
+      <option disabled value="">Sort</option>
       <option value="Newest">Newest</option>
       <option value="A-Z">A-Z</option>
       <option value="Z-A">Z-A</option>
@@ -14,10 +15,15 @@
 </template>
 
 <script setup>
-const emit = defineEmits(["updateSort"]);
+import { ref } from "vue";
+import { useStoryStore } from "~/stores/story.ts";
 
-const handleSortChange = (event) => {
-  emit("updateSort", event.target.value);
+const storyStore = useStoryStore();
+
+const selectedSort = ref("");
+
+const handleSortChange = () => {
+  storyStore.sortOrder = selectedSort.value;
 };
 </script>
 

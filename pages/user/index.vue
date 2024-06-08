@@ -1,3 +1,18 @@
+<script setup>
+import { useUserStore } from "~/stores/user.ts";
+
+const userStore = useUserStore();
+
+onMounted(async () => {
+  await userStore.fetchProfile();
+});
+
+useHead({
+  title: "User | Storytime",
+});
+definePageMeta({ middleware: "auth" });
+</script>
+
 <template>
   <div>
     <div>
@@ -6,7 +21,7 @@
           <div class="container">
             <div class="row min-vh-100 justify-content-start align-items-start">
               <div class="col-3">
-                <SidebarUser />
+                <UserSidebarUser />
               </div>
               <div class="col-9">
                 <section class="profile card rounded-1">
@@ -112,12 +127,6 @@
     </div>
   </div>
 </template>
-
-<script setup>
-useHead({
-  title: "User | Storytime",
-});
-</script>
 
 <style scoped>
 .container {

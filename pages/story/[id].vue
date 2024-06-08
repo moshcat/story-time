@@ -36,7 +36,7 @@ useHead({
                   <img
                     :src="
                       urlBase +
-                      data.data.author.profile_picture.formats.thumbnail.url
+                      data.data.author.profile_picture?.formats.thumbnail.url
                     "
                     alt=""
                     width="auto"

@@ -4,10 +4,11 @@ export default defineNuxtConfig({
   components: [
     {
       path: "~/components",
-      pathPrefix: false,
+      pathPrefix: true,
     },
   ],
 
+  modules: ["@pinia/nuxt"],
   app: {
     head: {
       link: [

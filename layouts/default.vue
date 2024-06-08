@@ -1,11 +1,11 @@
 <template>
   <div>
-    <Navbar />
+    <HeadersNavbar />
     <!-- output page lainnya -->
     <div>
       <slot />
     </div>
-    <Footer />
+    <FootersFooter />
   </div>
 </template>
 
