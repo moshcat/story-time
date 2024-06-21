@@ -1,10 +1,12 @@
 import { defineStore } from "pinia";
+import axios from "axios";
 import { error } from "vscode-jsonrpc/lib/common/is";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
     accessToken: useCookie("access_token").value || null,
     user: null,
+    userData: {},
   }),
 
   actions: {
@@ -28,28 +30,48 @@ export const useAuthStore = defineStore("auth", {
       }
     },
 
-    async login(identifier: string, password: string) {
+    async login(payload: any) {
       try {
-        const response = await $fetch(
+        const { data } = await axios.post(
           "https://storytime-api.strapi.timedoor-js.web.id/api/auth/local",
+          payload,
           {
-            method: "post",
-            body: { identifier: identifier, password: password },
+            headers: { "Content-Type": "multipart/form-data" },
           },
         );
+        this.accessToken = data.data.jwt;
+        this.user = data.data.user;
 
-        this.accessToken = response.data.jwt;
-        this.user = response.data.user;
-        useCookie("access_token").value = response.data.jwt;
-        await this.fetchProfile();
-
-        console.log("login berhasil");
-        alert("login berhasil");
+        console.log(this.user);
+        useCookie("access_token").value = data.data.jwt;
+        alert("Login berhasil");
       } catch (error) {
-        console.log("login gagal: ", error);
-        alert(error);
+        console.error(error);
       }
     },
+
+    // async login(identifier: string, password: string) {
+    //   try {
+    //     const response = await $fetch(
+    //       "https://storytime-api.strapi.timedoor-js.web.id/api/auth/local",
+    //       {
+    //         method: "post",
+    //         body: { identifier: identifier, password: password },
+    //       },
+    //     );
+    //
+    //     this.accessToken = response.data.jwt;
+    //     this.user = response.data.user;
+    //     useCookie("access_token").value = response.data.jwt;
+    //     await this.fetchProfile();
+    //
+    //     console.log("login berhasil");
+    //     alert("login berhasil");
+    //   } catch (error) {
+    //     console.log("login gagal: ", error);
+    //     alert(error);
+    //   }
+    // },
     async logout() {
       this.accessToken = null;
       this.user = null;
@@ -72,7 +94,7 @@ export const useAuthStore = defineStore("auth", {
         );
         this.user = profile;
       } catch (error) {
-        console.log("fetch profile", error);
+        console.error("fetch profile", error);
         this.user = null;
       }
     },

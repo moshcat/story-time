@@ -7,7 +7,11 @@ export default defineNuxtConfig({
       pathPrefix: true,
     },
   ],
-
+  runtimeConfig: {
+    public: {
+      apiUrl: process.env.API_URL,
+    },
+  },
   modules: ["@pinia/nuxt"],
   app: {
     head: {

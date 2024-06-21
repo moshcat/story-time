@@ -1,22 +1,51 @@
 // stores/story.ts
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
+import { useUserStore } from "~/stores/user";
+import { decodeToken } from "~/helpers/decodeToken";
 import axios from "axios";
 
 const urlBase = "https://storytime-api.strapi.timedoor-js.web.id/";
 
 export const useStoryStore = defineStore("story", () => {
   const stories = ref([]);
+  const userStories = ref([]);
   const defaultPage = ref(1);
   const searchQuery = ref("");
   const sortOrder = ref("Newest");
+  const userProfile = useUserStore();
+  const config = useRuntimeConfig();
 
-  const fetchStories = async (query, page) => {
+  async function getUserStory() {
     try {
-      const response = await axios.get(`${urlBase}api/stories`, {
+      await userProfile.fetchProfile();
+      const userId = userProfile.userData.data;
+      console.log(userId);
+
+      if (userId) {
+        const { data, error } = await useFetch(
+          `${config.public.apiUrl}/stories?author=${userId.id}`,
+        );
+        userStories.value = data.value.data;
+      }
+    } catch (error) {
+      console.error("Error decoding token:", error);
+    }
+  }
+
+  const fetchStories = async (
+    query: string,
+    page: string,
+    sort: string,
+    category: string,
+  ) => {
+    try {
+      const response = await axios.get(`${config.public.apiUrl}/stories`, {
         params: {
           keyword: query,
           page: page,
+          // sort: sort,
+          // category: category,
         },
       });
 
@@ -72,11 +101,11 @@ export const useStoryStore = defineStore("story", () => {
     return new Intl.DateTimeFormat("id-ID", options).format(date);
   };
 
-  fetchStories(searchQuery.value, defaultPage.value);
-
   return {
     stories,
+    userStories,
     defaultPage,
+    getUserStory,
     searchQuery,
     sortOrder,
     fetchStories,

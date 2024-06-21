@@ -5,7 +5,7 @@
         <div class="container">
           <div class="row min-vh-100 justify-content-start align-items-start">
             <div class="col-3">
-              <SidebarUser />
+              <UserSidebarUser />
             </div>
             <div class="col-9">
               <section class="favorite">

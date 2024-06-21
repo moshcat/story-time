@@ -2,11 +2,15 @@
 import { useStoryStore } from "~/stores/story.ts";
 
 const urlBase = "https://storytime-api.strapi.timedoor-js.web.id/";
-
 const storyStore = useStoryStore();
 
-storyStore.fetchStories(storyStore.searchQuery, storyStore.defaultPage);
-
+storyStore.fetchStories(
+  storyStore.searchQuery,
+  "",
+  storyStore.defaultPage,
+  storyStore.sortOrder,
+  storyStore.category,
+);
 watch(
   () => storyStore.searchQuery,
   (newQuery) => {

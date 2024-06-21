@@ -3,8 +3,11 @@ import { useAuthStore } from "~/stores/auth.ts";
 import { Form, Field, ErrorMessage } from "vee-validate";
 import * as yup from "yup";
 
-const identifier = ref("");
-const password = ref("");
+const loginData = reactive({
+  identifier: "",
+  password: "",
+});
+
 const passwordType = ref("password");
 
 const authStore = useAuthStore();
@@ -14,10 +17,13 @@ const schema = yup.object({
   identifier: yup.string().required("Email/Username is required"),
   password: yup.string().required("Password is required"),
 });
-const handleLogin = async (values) => {
-  console.log(identifier.value, password.value);
-  await authStore.login(identifier.value, password.value);
-  router.push("/");
+const handleLogin = async () => {
+  try {
+    await authStore.login(loginData);
+    router.push("/");
+  } catch (error) {
+    console.error(error);
+  }
 };
 
 const toggleShowPassword = () => {
@@ -48,7 +54,7 @@ const toggleShowPassword = () => {
                           type="text"
                           label="Email/Password"
                           placeholder="Enter your email/username"
-                          v-model="identifier"
+                          v-model="loginData.identifier"
                           name="identifier"
                         />
                         <ErrorMessage
@@ -63,7 +69,7 @@ const toggleShowPassword = () => {
                             :type="passwordType"
                             label="Password"
                             placeholder="Enter your password"
-                            v-model="password"
+                            v-model="loginData.password"
                             name="password"
                           />
                           <button

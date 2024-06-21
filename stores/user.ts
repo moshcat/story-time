@@ -2,6 +2,7 @@ import { defineStore } from "pinia";
 
 export const useUserStore = defineStore("user", () => {
   const user = ref(null);
+  const userData = ref({});
 
   async function fetchProfile() {
     try {
@@ -25,6 +26,7 @@ export const useUserStore = defineStore("user", () => {
 
       const data = await response.json();
       user.value = data;
+      userData.value = data;
     } catch (error) {
       console.error("Gagal fetch data: ", error);
     }
@@ -32,6 +34,7 @@ export const useUserStore = defineStore("user", () => {
 
   return {
     user,
+    userData,
     fetchProfile,
   };
 });

@@ -20,7 +20,7 @@ const handleLogout = () => {
       </nuxt-link>
       <hr />
       <nuxt-link
-        to="/user/story"
+        to="/user/story/"
         class="d-flex gap-2 text-decoration-none text-dark align-items-center"
         ><i class="fa-solid fa-book fs-5"></i>Storylist
       </nuxt-link>

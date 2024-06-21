@@ -22,7 +22,6 @@ const toggleShowConfirmation = () => {
   confirmPasswordType.value =
     confirmPasswordType.value === "password" ? "text" : "password";
 };
-
 const schema = yup.object({
   name: yup.string().required("Name is required"),
   username: yup

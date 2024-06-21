@@ -13,11 +13,15 @@
     "@nuxt/http": "^0.6.4",
     "@nuxtjs/fontawesome": "^1.1.2",
     "@pinia/nuxt": "^0.5.1",
+    "@vueup/vue-quill": "^1.2.0",
     "bootstrap": "^5.3.3",
+    "js-cookie": "^3.0.5",
+    "jwt-decode": "^4.0.0",
     "nuxt": "^3.11.2",
     "pinia": "^2.1.7",
     "vee-validate": "^4.13.0",
     "vue": "^3.4.27",
+    "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.3.2",
     "yup": "^1.4.0"
   },
@@ -25,6 +29,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.5.2",
     "@fortawesome/free-regular-svg-icons": "^6.5.2",
     "@fortawesome/free-solid-svg-icons": "^6.5.2",
+    "@types/js-cookie": "^3.0.6",
     "@vesp/nuxt-fontawesome": "^1.0.4",
     "prettier": "3.2.5",
     "sass": "^1.77.2"
