@@ -24,7 +24,7 @@ export const useStoryStore = defineStore("story", () => {
 
       if (userId) {
         const { data, error } = await useFetch(
-          `${config.public.apiUrl}/stories?author=${userId.id}`,
+          `${config.public.apiUrl}/stories?author=${userId.id}`
         );
         userStories.value = data.value.data;
       }
@@ -33,11 +33,27 @@ export const useStoryStore = defineStore("story", () => {
     }
   }
 
+  async function createStory(storyData: any) {
+    console.log(storyData.value);
+
+    // try {
+    //   const data = await $fetch(`${config.public.apiUrl}/stories`,{
+    //     methods: 'POST',
+    //     headers:  {'Content-Type': 'multipart/form-data'},
+    //     body: storyData
+    //   })
+    //   console.log(data);
+
+    // } catch (error) {
+    //   console.error(error);
+    // }
+  }
+
   const fetchStories = async (
     query: string,
     page: string,
     sort: string,
-    category: string,
+    category: string
   ) => {
     try {
       const response = await axios.get(`${config.public.apiUrl}/stories`, {
@@ -86,7 +102,7 @@ export const useStoryStore = defineStore("story", () => {
           .includes(searchQuery.value.toLowerCase()) ||
         stories.category.name
           .toLowerCase()
-          .includes(searchQuery.value.toLowerCase()),
+          .includes(searchQuery.value.toLowerCase())
     );
   });
 
@@ -103,6 +119,7 @@ export const useStoryStore = defineStore("story", () => {
 
   return {
     stories,
+    createStory,
     userStories,
     defaultPage,
     getUserStory,

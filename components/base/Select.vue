@@ -2,7 +2,8 @@
 import { useCategoryStore } from "~/stores/category";
 
 const categoryList = useCategoryStore();
-
+const props = defineProps<{ modelValue: string }>();
+const emit = defineEmits(["update:modelValue"]);
 onMounted(async () => {
   try {
     await categoryList.getCategories();
@@ -14,11 +15,16 @@ onMounted(async () => {
 
 <template>
   <label for="" class="form-label fw-semibold">Category</label>
-  <select class="form-select" aria-label="Default select example">
+  <select
+    class="form-select"
+    aria-label="Default select example"
+    :v-model="modelValue"
+    @change="$emit('update:modelValue', $event.target.value)"
+  >
     <option selected>Select category</option>
     <option
-      v-for="item in categoryList.category"
-      :key="item.id"
+      v-for="(item, index) in categoryList.category"
+      :key="index"
       :value="item.id"
     >
       {{ item.name }}
