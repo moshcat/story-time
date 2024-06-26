@@ -1,8 +1,13 @@
-<script setup>
+<script setup lang="ts">
 import { useStoryStore } from "~/stores/story.ts";
 import { useAuthStore } from "~/stores/auth.ts";
 
 const storyStore = useStoryStore();
+const id = ref();
+
+const storyId = (idTable: string) => {
+  id.value = idTable;
+};
 onMounted(() => {
   storyStore.getUserStory();
 });
@@ -27,13 +32,18 @@ onMounted(() => {
                 ><i class="fa-solid fa-pen me-1"></i>Edit
               </BaseButton>
             </NuxtLink>
-            <BaseButton variant="outline-danger"
+            <BaseButton
+              variant="outline-danger"
+              @click="storyId(story.id)"
+              data-bs-toggle="modal"
+              data-bs-target="#deleteStoryModal"
               ><i class="fa-solid fa-trash me-1"></i>Delete
             </BaseButton>
           </td>
         </tr>
       </tbody>
     </table>
+    <DeleteModal :id="id" />
   </div>
 </template>
 

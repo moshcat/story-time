@@ -13,7 +13,7 @@
                   class="story-list__header d-flex align-items-center justify-content-between mb-4"
                 >
                   <h4>Storylist</h4>
-                  <NuxtLink to="create">
+                  <NuxtLink @click="createLink">
                     <button class="btn btn-dark rounded-1">
                       <i class="fa-solid fa-plus me-2"></i>
                       <span>Create Story</span>
@@ -40,6 +40,10 @@
 useHead({
   title: "Storylist | Storytime",
 });
+
+const createLink = () => {
+  navigateTo("/user/story/create");
+};
 </script>
 
 <style scoped>
