@@ -4,8 +4,6 @@ import { ref, computed } from "vue";
 import { useUserStore } from "~/stores/user";
 import axios from "axios";
 
-const urlBase = "https://storytime-api.strapi.timedoor-js.web.id/";
-
 export const useStoryStore = defineStore("story", () => {
   const stories = ref([]);
   const userStories = ref([]);

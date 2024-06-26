@@ -1,3 +1,20 @@
+<script setup lang="ts">
+import { useStoryStore } from "~/stores/story";
+
+const createLink = () => {
+  navigateTo("/user/story/create");
+};
+const story = useStoryStore();
+onMounted(() => {
+  story.getUserStory();
+});
+console.log(story.userStories.value);
+
+useHead({
+  title: "Storylist | Storytime",
+});
+</script>
+
 <template>
   <div>
     <main class="main-wrapper">
@@ -22,8 +39,8 @@
                 </div>
                 <div class="story-list__body row">
                   <div class="col-lg-12">
-                    <!--                    <BaseEmpty />-->
-                    <UserStorylistList />
+                    <BaseEmpty v-if="!story.userStories.length" />
+                    <UserStorylistList v-else :stories="story.userStories" />
                   </div>
                 </div>
               </section>
@@ -34,16 +51,6 @@
     </main>
   </div>
 </template>
-`
-
-<script setup>
-const createLink = () => {
-  navigateTo("/user/story/create");
-};
-useHead({
-  title: "Storylist | Storytime",
-});
-</script>
 
 <style scoped>
 .container {
