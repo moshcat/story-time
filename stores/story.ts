@@ -2,7 +2,6 @@
 import { defineStore } from "pinia";
 import { ref, computed } from "vue";
 import { useUserStore } from "~/stores/user";
-import { decodeToken } from "~/helpers/decodeToken";
 import axios from "axios";
 
 const urlBase = "https://storytime-api.strapi.timedoor-js.web.id/";
@@ -15,6 +14,7 @@ export const useStoryStore = defineStore("story", () => {
   const sortOrder = ref("Newest");
   const userProfile = useUserStore();
   const config = useRuntimeConfig();
+  const status_code = ref();
 
   async function getUserStory() {
     try {
@@ -32,23 +32,6 @@ export const useStoryStore = defineStore("story", () => {
       console.error("Error decoding token:", error);
     }
   }
-
-  async function createStory(storyData: any) {
-    console.log(storyData.value);
-
-    // try {
-    //   const data = await $fetch(`${config.public.apiUrl}/stories`,{
-    //     methods: 'POST',
-    //     headers:  {'Content-Type': 'multipart/form-data'},
-    //     body: storyData
-    //   })
-    //   console.log(data);
-
-    // } catch (error) {
-    //   console.error(error);
-    // }
-  }
-
   const fetchStories = async (
     query: string,
     page: string,
@@ -75,6 +58,72 @@ export const useStoryStore = defineStore("story", () => {
       console.error("Error fetching stories:", error);
     }
   };
+
+  async function createStory(storyData: any) {
+    try {
+      console.log("Sending story data:", storyData.value);
+      const formData = new FormData();
+      formData.append("title", storyData.title);
+      formData.append("content", storyData.content);
+      formData.append("category", storyData.category);
+      // https://storytime-api.strapi.timedoor-js.web.id/api/stories (endpoint nya)
+      // const response = await $fetch(`${config.public.apiUrl}/stories`, {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization: `Bearer ${useCookie("access_token").value}`,
+      //   },
+      //   body: formData,
+      // });
+      const { data, error, pending } = await useFetch(
+        `${config.public.apiUrl}/stories`,
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${useCookie("access_token").value}`,
+          },
+          body: formData,
+        }
+      );
+      if (error.value) {
+        console.error("Error response status:", error.value.status);
+        status_code.value = error.value.status;
+        throw new Error(error.value.message);
+      }
+      console.log("Full Response Data:", data.value);
+      status_code.value = data.value.status || 200; // Assuming a successful response would have a status code of 200
+      return status_code;
+    } catch (error) {
+      console.error("Gagal fetch data", error);
+    }
+  }
+
+  async function uploadImage(imageData: any) {
+    try {
+      console.log("Uploading image data:", imageData);
+      const response = await $fetch(`${config.public.apiUrl}/upload`, {
+        method: "POST",
+        headers: { "Content-Type": "multipart/form-data" },
+        body: imageData,
+      });
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Gagal fetch data", error);
+    }
+  }
+
+  async function deleteStory(id: any) {
+    try {
+      const response = await $fetch(`${config.public.apiUrl}/stories/${id}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${useCookie("access_token").value}`,
+        },
+      });
+      await getUserStory();
+    } catch (error) {
+      console.error(error);
+    }
+  }
 
   const sortedStories = computed(() => {
     let sorted = [...stories.value];
@@ -120,6 +169,8 @@ export const useStoryStore = defineStore("story", () => {
   return {
     stories,
     createStory,
+    uploadImage,
+    deleteStory,
     userStories,
     defaultPage,
     getUserStory,
