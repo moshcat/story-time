@@ -37,13 +37,12 @@
 `
 
 <script setup>
-useHead({
-  title: "Storylist | Storytime",
-});
-
 const createLink = () => {
   navigateTo("/user/story/create");
 };
+useHead({
+  title: "Storylist | Storytime",
+});
 </script>
 
 <style scoped>
