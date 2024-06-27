@@ -27,7 +27,7 @@ onMounted(() => {
           <td class="fw-semibold">{{ story.title }}</td>
           <td>13:45, 25 Nov 2022</td>
           <td class="d-flex gap-1">
-            <NuxtLink to="edit">
+            <NuxtLink :to="{ path: `/user/story/${story.id}/edit` }">
               <BaseButton variant="outline-dark"
                 ><i class="fa-solid fa-pen me-1"></i>Edit
               </BaseButton>

@@ -16,7 +16,7 @@ onMounted(async () => {
 <template>
   <label for="" class="form-label fw-semibold">Category</label>
   <select
-    class="form-select"
+    class="form-select rounded-0"
     aria-label="Default select example"
     :v-model="modelValue"
     @change="$emit('update:modelValue', $event.target.value)"

@@ -6,6 +6,7 @@ import axios from "axios";
 
 export const useStoryStore = defineStore("story", () => {
   const stories = ref([]);
+  const story = ref([]);
   const userStories = ref([]);
   const defaultPage = ref(1);
   const searchQuery = ref("");
@@ -56,6 +57,16 @@ export const useStoryStore = defineStore("story", () => {
       console.error("Error fetching stories:", error);
     }
   };
+
+  async function getStoryId(id: number) {
+    const { data, error } = await useFetch(
+      `${config.public.apiUrl}/stories/${id}`
+    );
+    if (!data) {
+      console.error("Gagal fetch data", error);
+    }
+    story.value = data.value.data;
+  }
 
   async function createStory(storyData: any) {
     try {
@@ -160,8 +171,10 @@ export const useStoryStore = defineStore("story", () => {
 
   return {
     stories,
+    story,
     createStory,
     status_code,
+    getStoryId,
     uploadImage,
     deleteStory,
     userStories,
