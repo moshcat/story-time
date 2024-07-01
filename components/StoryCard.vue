@@ -33,10 +33,19 @@ watch(
     <section class="story__list container" style="margin-top: 1rem">
       <div class="row">
         <div
-          class="col-3 mt-3"
+          class="col-3 mt-3 position-relative"
           v-for="(item, index) in storyStore.filteredStories"
           :key="index"
+          id="card"
         >
+          <div class="bookmark">
+            <BaseButton
+              variant="dark rounded-circle p-3"
+              class="position-absolute rounded-circle bookmark"
+              ><i class="fa-regular fa-bookmark fs-5"></i>
+            </BaseButton>
+          </div>
+
           <NuxtLink :to="'/story/' + item.id">
             <div
               class="card border-secondary-subtle"
@@ -53,6 +62,7 @@ watch(
                   height="200px"
                 />
               </NuxtLink>
+
               <div class="card-body d-flex flex-column position-relative">
                 <div class="card-title p-1 pb-0">
                   <span class="d-flex gap-2">
@@ -93,4 +103,14 @@ watch(
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.bookmark {
+  top: 10px;
+  z-index: 1;
+  left: 20 0px;
+}
+
+.bookmark:hover {
+  display: block;
+}
+</style>

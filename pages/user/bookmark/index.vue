@@ -1,3 +1,9 @@
+<script setup lang="ts">
+useHead({
+  title: "Bookmark | Storytime",
+});
+</script>
+
 <template>
   <div>
     <main class="main-wrapper">
@@ -32,12 +38,6 @@
     </main>
   </div>
 </template>
-
-<script setup>
-useHead({
-  title: "Bookmark | Storytime",
-});
-</script>
 
 <style scoped>
 .container {

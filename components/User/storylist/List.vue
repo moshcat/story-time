@@ -25,7 +25,7 @@ onMounted(() => {
       <tbody class="">
         <tr v-for="story in storyStore.userStories" :key="story.id">
           <td class="fw-semibold">{{ story.title }}</td>
-          <td>13:45, 25 Nov 2022</td>
+          <td>{{ storyStore.formatDate(story.createdAt) }}</td>
           <td class="d-flex gap-1">
             <NuxtLink :to="{ path: `/user/story/${story.id}/edit` }">
               <BaseButton variant="outline-dark"

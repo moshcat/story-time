@@ -23,7 +23,7 @@ export const useStoryStore = defineStore("story", () => {
 
       if (userId) {
         const { data, error } = await useFetch(
-          `${config.public.apiUrl}/stories?author=${userId.id}`
+          `${config.public.apiUrl}/stories?author=${userId.id}`,
         );
         userStories.value = data.value.data;
       }
@@ -31,11 +31,12 @@ export const useStoryStore = defineStore("story", () => {
       console.error("Error decoding token:", error);
     }
   }
+
   const fetchStories = async (
     query: string,
     page: string,
     sort: string,
-    category: string
+    category: string,
   ) => {
     try {
       const response = await axios.get(`${config.public.apiUrl}/stories`, {
@@ -60,7 +61,7 @@ export const useStoryStore = defineStore("story", () => {
 
   async function getStoryId(id: number) {
     const { data, error } = await useFetch(
-      `${config.public.apiUrl}/stories/${id}`
+      `${config.public.apiUrl}/stories/${id}`,
     );
     if (!data) {
       console.error("Gagal fetch data", error);
@@ -83,7 +84,7 @@ export const useStoryStore = defineStore("story", () => {
             Authorization: `Bearer ${useCookie("access_token").value}`,
           },
           body: formData,
-        }
+        },
       );
       status_code.value = data.value.status || 200; // Assuming a successful response would have a status code of 200
       // console.log("Full Response Data:", data.value);
@@ -94,6 +95,54 @@ export const useStoryStore = defineStore("story", () => {
       return fetchStories;
     } catch (error) {
       console.error("Gagal fetch data", error);
+    }
+  }
+
+  async function updateStory(storyData: any, id) {
+    try {
+      console.log("data id", id);
+      console.log("Sending story data:", storyData.value);
+      const storyId = id;
+      const formData = new FormData();
+      formData.append("title", storyData.title);
+      formData.append("content", storyData.content);
+      formData.append("category", storyData.category);
+      const { data, error, pending } = await useFetch(
+        `${config.public.apiUrl}/stories/${storyId}`,
+        {
+          method: "PUT",
+          headers: {
+            Authorization: `Bearer ${useCookie("access_token").value}`,
+          },
+          body: formData,
+        },
+      );
+      status_code.value = data.value.status || 200; // Assuming a successful response would have a status code of 200
+      // console.log("Full Response Data:", data.value);
+
+      if (data.value && data.value.data) {
+        stories.value.unshift(data.value.data);
+      }
+      return fetchStories;
+    } catch (error) {
+      console.error("Gagal fetch data", error);
+    }
+  }
+
+  async function removeImage(imageData: any) {
+    console.log("Uploading image data:", imageData);
+
+    try {
+      const response = await $fetch(`${config.public.apiUrl}/upload`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${useCookie("access_token").value}`,
+        },
+        body: imageData,
+      });
+      console.log("Response:", response);
+    } catch (error) {
+      console.error("Gagal hapus data", error);
     }
   }
 
@@ -154,7 +203,7 @@ export const useStoryStore = defineStore("story", () => {
           .includes(searchQuery.value.toLowerCase()) ||
         stories.category.name
           .toLowerCase()
-          .includes(searchQuery.value.toLowerCase())
+          .includes(searchQuery.value.toLowerCase()),
     );
   });
 
@@ -174,6 +223,8 @@ export const useStoryStore = defineStore("story", () => {
     story,
     createStory,
     status_code,
+    updateStory,
+    removeImage,
     getStoryId,
     uploadImage,
     deleteStory,

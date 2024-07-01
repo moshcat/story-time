@@ -31,19 +31,21 @@ const updateValue = (event) => {
       style="font-size: 14px"
       >{{ label }}<span class="text-danger fw-bolder fs-6"> *</span></label
     >
-    <Field
-      :type="type"
-      :id="identity"
-      :placeholder="placeholder"
-      :value="modelValue"
-      :readonly="readonly === '1'"
-      :name="name"
-      :class="[
-        'form-control ',
-        isGroup ? 'rounded-0' : 'border-end-1 rounded-0',
-      ]"
-      @input="$emit('update:modelValue', $event.target.value)"
-    />
+    <Field>
+      <input
+        :type="type"
+        :id="identity"
+        :placeholder="placeholder"
+        :value="modelValue"
+        :readonly="readonly === '1'"
+        :name="name"
+        :class="[
+          'form-control ',
+          isGroup ? 'rounded-0' : 'border-end-1 rounded-0',
+        ]"
+        @input="$emit('update:modelValue', $event.target.value)"
+      />
+    </Field>
     <!--    <button-->
     <!--      type="button"-->
     <!--      :class="['input-group-text bg-white ', isGroup ? 'd-none' : '']"-->
