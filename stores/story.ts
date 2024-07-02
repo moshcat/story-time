@@ -218,6 +218,11 @@ export const useStoryStore = defineStore("story", () => {
   };
 
   const formatDate = (dateStr) => {
+    if (!dateStr || isNaN(Date.parse(dateStr))) {
+      console.error("Invalid date string:", dateStr);
+      return "Invalid date";
+    }
+
     const date = new Date(dateStr);
     const options = { day: "numeric", month: "short", year: "numeric" };
     return new Intl.DateTimeFormat("id-ID", options).format(date);
