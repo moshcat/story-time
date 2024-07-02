@@ -63,24 +63,24 @@ const handleSubmit = async () => {
   try {
     console.log(storyData);
     await storyStore.updateStory(storyData, id);
-    // if (storyStore.story.cover_image.id) {
-    //   await storyStore.removeImage(storyStore.story.cover_image.id);
-    // }
-    // if (storyStore.status_code === 200) {
-    //   const newStoryId = storyStore.stories[0]?.id;
-    //   if (!newStoryId) {
-    //     throw new Error("No story ID returned");
-    //   }
-    //   if (file.value) {
-    //     const data = new FormData();
-    //     data.append("files", file.value);
-    //     data.append("refId", newStoryId);
-    //     data.append("ref", "api::story.story");
-    //     data.append("field", "cover_image");
-    //     await storyStore.uploadImage(data);
-    //   }
-    //   router.push("/user/story");
-    // }
+    if (storyStore.story.cover_image.id) {
+      await storyStore.removeImage(storyStore.story.cover_image.id);
+    }
+    if (storyStore.status_code === 200) {
+      const newStoryId = storyStore.stories[0]?.id;
+      if (!newStoryId) {
+        throw new Error("No story ID returned");
+      }
+      if (file.value) {
+        const data = new FormData();
+        data.append("files", file.value);
+        data.append("refId", newStoryId);
+        data.append("ref", "api::story.story");
+        data.append("field", "cover_image");
+        await storyStore.uploadImage(data);
+      }
+      router.push("/user/story");
+    }
   } catch (e) {
     console.error(e);
     console.log(storyData);
@@ -101,14 +101,20 @@ const goBack = () => {
     {{ storyData.title }}
     <form @submit.prevent="handleSubmit">
       <div class="mb-3">
-        <BaseInput
-          type="text"
-          label="Title"
-          placeholder="Enter story title"
-          v-model="storyData.title"
-          name="title"
-        />
-        <ErrorMessage class="text-danger fs-6" name="title" />
+        <div class="mb-3">
+          <label for="title" class="form-label fw-semibold w-100 fs-6"
+            >Title</label
+          >
+          <input
+            class="form-control"
+            type="text"
+            label="Title"
+            placeholder="Enter story title"
+            v-model="storyData.title"
+            name="title"
+          />
+          <ErrorMessage class="text-danger fs-6" name="title" />
+        </div>
 
         <div class="mb-3">
           <label for="category" class="form-label fw-semibold">Category</label>

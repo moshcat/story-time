@@ -107,7 +107,7 @@ watch(
 .bookmark {
   top: 10px;
   z-index: 1;
-  left: 20 0px;
+  left: 210px;
 }
 
 .bookmark:hover {

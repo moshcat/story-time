@@ -98,31 +98,34 @@ export const useStoryStore = defineStore("story", () => {
     }
   }
 
-  async function updateStory(storyData: any, id) {
+  async function updateStory(
+    storyData: {
+      title: string;
+      content: string;
+      category: string;
+    },
+    id: number,
+  ) {
     try {
       console.log("data id", id);
-      console.log("Sending story data:", storyData.value);
-      const storyId = id;
-      const formData = new FormData();
-      formData.append("title", storyData.title);
-      formData.append("content", storyData.content);
-      formData.append("category", storyData.category);
-      const { data, error, pending } = await useFetch(
-        `${config.public.apiUrl}/stories/${storyId}`,
-        {
-          method: "PUT",
-          headers: {
-            Authorization: `Bearer ${useCookie("access_token").value}`,
-          },
-          body: formData,
-        },
-      );
-      status_code.value = data.value.status || 200; // Assuming a successful response would have a status code of 200
-      // console.log("Full Response Data:", data.value);
+      console.log("Sending story data:", storyData);
 
-      if (data.value && data.value.data) {
-        stories.value.unshift(data.value.data);
+      const response = await $fetch(`${config.public.apiUrl}/stories/${id}`, {
+        method: "PUT",
+        headers: {
+          Authorization: `Bearer ${useCookie("access_token").value}`,
+        },
+        body: { data: storyData },
+      });
+
+      console.log("Response:", response);
+
+      status_code.value = response.status || 200; // Assuming a successful response would have a status code of 200
+
+      if (response && response.data) {
+        stories.value.unshift(response.data);
       }
+
       return fetchStories;
     } catch (error) {
       console.error("Gagal fetch data", error);
@@ -133,13 +136,15 @@ export const useStoryStore = defineStore("story", () => {
     console.log("Uploading image data:", imageData);
 
     try {
-      const response = await $fetch(`${config.public.apiUrl}/upload`, {
-        method: "DELETE",
-        headers: {
-          Authorization: `Bearer ${useCookie("access_token").value}`,
+      const response = await $fetch(
+        `${config.public.apiUrl}/upload/files/${imageData}`,
+        {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${useCookie("access_token").value}`,
+          },
         },
-        body: imageData,
-      });
+      );
       console.log("Response:", response);
     } catch (error) {
       console.error("Gagal hapus data", error);
