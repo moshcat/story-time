@@ -1,6 +1,7 @@
 import { defineStore } from "pinia";
 import axios from "axios";
 import { error } from "vscode-jsonrpc/lib/common/is";
+import { clearBookmark } from "~/helpers/bookmark";
 
 export const useAuthStore = defineStore("auth", {
   state: () => ({
@@ -75,6 +76,7 @@ export const useAuthStore = defineStore("auth", {
     async logout() {
       this.accessToken = null;
       this.user = null;
+      clearBookmark();
       useCookie("access_token").value = null;
     },
 
