@@ -22,6 +22,15 @@ export const toggleBookmark = (story: any) => {
   return bookmark;
 };
 
+export const removeBookmark = (story: any) => {
+  let bookmark = getBookmark();
+  const index = bookmark.findIndex((item: any) => item.id === story.id);
+  if (index !== -1) {
+    bookmark.splice(index, 1);
+  }
+  setBookmark(bookmark);
+  return bookmark;
+};
 export const clearBookmark = () => {
   const { $locally } = useNuxtApp();
 
