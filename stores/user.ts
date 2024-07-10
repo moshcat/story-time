@@ -3,6 +3,8 @@ import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", () => {
   const user = ref(null);
   const userData = ref({});
+  const config = useRuntimeConfig();
+  const accessToken = useCookie("access_token").value;
 
   async function fetchProfile() {
     try {
@@ -32,9 +34,26 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
+  async function editProfile(payload: any) {
+    try {
+      // console.log(payload);
+      await $fetch(config.public.apiUrl + "/users/me", {
+        method: "PATCH",
+        body: payload,
+        headers: {
+          Authorization: `Bearer ${accessToken}`,
+        },
+      });
+      // console.log("berhasil");
+    } catch (e) {
+      console.error("Error changing data", e);
+    }
+  }
+
   return {
     user,
     userData,
+    editProfile,
     fetchProfile,
   };
 });

@@ -32,6 +32,33 @@ export const useStoryStore = defineStore("story", () => {
     }
   }
 
+  // async function fetchStories(keyword = "", page: any, sort = "Newest") {
+  //   try {
+  //     const { data, error } = await useFetch(
+  //       `${config.public.apiUrl}/stories`,
+  //       {
+  //         query: {
+  //           keyword: keyword,
+  //           page: page,
+  //           sort: sort,
+  //         },
+  //       },
+  //     );
+  //
+  //     if (error) {
+  //       console.error("Gagal fetch data", error.value);
+  //     } else {
+  //       if (page === 1) {
+  //         stories.value = data.value.data;
+  //       } else {
+  //         stories.value = [...stories.value, ...data.value.data];
+  //       }
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching stories:", error);
+  //   }
+  // }
+
   const fetchStories = async (
     query: string,
     page: string,
