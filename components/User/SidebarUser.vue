@@ -12,7 +12,7 @@ const handleLogout = () => {
 
 <template>
   <div>
-    <aside class="sidebar card d-flex gap-3 rounded-1 p-3">
+    <aside class="sidebar card d-flex gap-3 rounded-0 p-3">
       <nuxt-link
         to="/user"
         class="d-flex gap-2 text-decoration-none text-dark align-items-center"

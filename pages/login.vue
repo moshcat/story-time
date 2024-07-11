@@ -40,9 +40,7 @@ const toggleShowPassword = () => {
             class="row min-vh-100 justify-content-center align-items-center d-flex"
           >
             <div class="col-5">
-              <div
-                class="login bg-white p-4 border border-secondary-subtle rounded-3"
-              >
+              <div class="login bg-white p-4 border border-secondary-subtle">
                 <div class="login__header">
                   <h1 class="login__title fs-3 py-2">Login</h1>
                 </div>

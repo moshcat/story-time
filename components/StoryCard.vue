@@ -1,15 +1,36 @@
 <script setup>
 import { useStoryStore } from "~/stores/story.ts";
-import { getBookmark, toggleBookmark } from "~/helpers/bookmark.ts";
+import {
+  getBookmark,
+  toggleBookmark,
+  removeBookmark,
+} from "~/helpers/bookmark.ts";
+import { onMounted } from "vue";
+import { navigateTo } from "#app";
+import { useAuthStore } from "~/stores/auth";
 
 const { $locally } = useNuxtApp();
+const router = useRouter();
 const urlBase = "https://storytime-api.strapi.timedoor-js.web.id/";
 const storyStore = useStoryStore();
+const lastClickTime = ref(0);
+const auth = useAuthStore();
 
 // bookmark
 const bookmark = ref(getBookmark());
 const handleToggleBookmark = (story) => {
-  bookmark.value = toggleBookmark(story);
+  if (!auth.accessToken && !auth.user) {
+    console.log(auth.accessToken);
+    router.push("/login");
+  } else {
+    const time = new Date().getTime();
+    if (time - lastClickTime.value < 300) {
+      bookmark.value = removeBookmark(story);
+    } else {
+      bookmark.value = toggleBookmark(story);
+    }
+    lastClickTime.value = time;
+  }
 };
 watch(
   () => bookmark.value,
@@ -18,28 +39,44 @@ watch(
   },
 );
 
-storyStore.fetchStories(
-  storyStore.searchQuery,
-  "",
-  storyStore.defaultPage,
-  storyStore.sortOrder,
-  storyStore.category,
-);
-watch(
-  () => storyStore.searchQuery,
-  (newQuery) => {
-    storyStore.defaultPage = 1;
-    storyStore.fetchStories(newQuery, storyStore.defaultPage);
-  },
-);
+const props = defineProps({
+  searchQuery: String,
+  sortOrder: String,
+});
 
 watch(
-  () => storyStore.sortOrder,
-  () => {
-    storyStore.defaultPage = 1;
-    storyStore.fetchStories(storyStore.searchQuery, storyStore.defaultPage);
+  () => [props.searchQuery, props.sortOrder],
+  ([newQuery, newOrder]) => {
+    storyStore.fetchStories(newQuery, 1, newOrder);
   },
+  { immediate: true },
 );
+
+onMounted(() => {
+  storyStore.fetchStories(props.searchQuery, 1, props.sortOrder);
+});
+// storyStore.fetchStories(
+//   storyStore.searchQuery,
+//   "",
+//   storyStore.defaultPage,
+//   storyStore.sortOrder,
+//   storyStore.category,
+// );
+// watch(
+//   () => storyStore.searchQuery,
+//   (newQuery) => {
+//     storyStore.defaultPage = 1;
+//     storyStore.fetchStories(newQuery, storyStore.defaultPage);
+//   },
+// );
+//
+// watch(
+//   () => storyStore.sortOrder,
+//   () => {
+//     storyStore.defaultPage = 1;
+//     storyStore.fetchStories(storyStore.searchQuery, storyStore.defaultPage);
+//   },
+// );
 </script>
 
 <template>
@@ -48,7 +85,7 @@ watch(
       <div class="row">
         <div
           class="col-sm-6 col-md-4 col-lg-4 col-xl-3 mt-3 position-relative"
-          v-for="(item, index) in storyStore.filteredStories"
+          v-for="(item, index) in storyStore.stories"
           :key="index"
           id="card"
         >
@@ -80,6 +117,14 @@ watch(
               <img
                 v-if="item.cover_image"
                 :src="urlBase + item.cover_image.url"
+                class="card-img-top object-fit-cover"
+                alt="..."
+                width="auto"
+                height="200px"
+              />
+              <img
+                v-else
+                :src="'https://archive.org/download/placeholder-image/placeholder-image.jpg'"
                 class="card-img-top object-fit-cover"
                 alt="..."
                 width="auto"

@@ -67,7 +67,8 @@ const handleSubmit = async () => {
       await storyStore.removeImage(storyStore.story.cover_image.id);
     }
     if (storyStore.status_code === 200) {
-      const newStoryId = storyStore.stories[0]?.id;
+      const newStoryId = storyStore.stories[0].id;
+      console.log(newStoryId);
       if (!newStoryId) {
         throw new Error("No story ID returned");
       }

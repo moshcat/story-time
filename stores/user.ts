@@ -3,6 +3,9 @@ import { defineStore } from "pinia";
 export const useUserStore = defineStore("user", () => {
   const user = ref(null);
   const userData = ref({});
+  const userId = ref("");
+  const imgId = ref("");
+  const avatar = ref("");
   const config = useRuntimeConfig();
   const accessToken = useCookie("access_token").value;
 
@@ -28,6 +31,9 @@ export const useUserStore = defineStore("user", () => {
 
       const data = await response.json();
       user.value = data;
+      userId.value = data.data.id;
+      imgId.value = data.data.profile_picture.id;
+      avatar.value = data.data.profile_picture.formats.thumbnail.url;
       userData.value = data;
     } catch (error) {
       console.error("Gagal fetch data: ", error);
@@ -50,10 +56,58 @@ export const useUserStore = defineStore("user", () => {
     }
   }
 
+  async function addImage(payload: any) {
+    try {
+      if (userId) {
+        const imageData = new FormData();
+        imageData.append("files", payload);
+        imageData.append("refId", userId.value);
+        imageData.append("ref", "plugin::users-permissions.user");
+        imageData.append("field", "profile_picture");
+
+        const res = await $fetch(`${config.public.apiUrl}/upload`, {
+          method: "POST",
+          body: imageData,
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        console.log("berhasil");
+      } else {
+        console.error("User ID tidak ditemukan");
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }
+
+  async function removeImage() {
+    try {
+      console.log(imgId);
+      if (imgId) {
+        await $fetch(`${config.public.apiUrl}/upload/files/${imgId.value}`, {
+          method: "DELETE",
+          headers: {
+            Authorization: `Bearer ${accessToken}`,
+          },
+        });
+        imgId.value = "";
+        console.log("berhasil delete image");
+      } else {
+        console.error("Image ID tidak ditemukan");
+      }
+    } catch (e) {
+      console.log(imgId);
+      console.error(e);
+    }
+  }
+
   return {
     user,
     userData,
     editProfile,
     fetchProfile,
+    addImage,
+    removeImage,
   };
 });

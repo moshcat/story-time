@@ -50,8 +50,4 @@ useHead({
 .title__wrapper {
   margin-top: 10rem;
 }
-
-.container {
-  background-color: #f4f2e6;
-}
 </style>

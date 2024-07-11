@@ -21,6 +21,7 @@
     "pinia": "^2.1.7",
     "vee-validate": "^4.13.0",
     "vue": "^3.4.27",
+    "vue-cropperjs": "^5.0.0",
     "vue-quill-editor": "^3.0.6",
     "vue-router": "^4.3.2",
     "yup": "^1.4.0"
